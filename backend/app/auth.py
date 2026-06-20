@@ -59,10 +59,11 @@ def get_current_user(
     )
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user_id: int = payload.get("sub")
-        if user_id is None:
+        user_id_str: str = payload.get("sub")
+        if user_id_str is None:
             raise credentials_exception
-    except JWTError:
+        user_id = int(user_id_str)
+    except (JWTError, ValueError):
         raise credentials_exception
 
     user_repo = UserRepository(db)
@@ -70,3 +71,31 @@ def get_current_user(
     if user is None:
         raise credentials_exception
     return user
+
+
+# ── Optional Current User Dependency ─────────────────────────────
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)
+
+def get_optional_current_user(
+    token: Optional[str] = Depends(oauth2_scheme_optional),
+    db: Session = Depends(get_db),
+) -> Optional[User]:
+    """
+    Like get_current_user, but returns None instead of raising 401
+    when no token is provided. Used for routes that work both
+    authenticated and unauthenticated (e.g., public job search).
+    """
+    if token is None:
+        return None
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user_id_str: str = payload.get("sub")
+        if user_id_str is None:
+            return None
+        user_id = int(user_id_str)
+    except (JWTError, ValueError):
+        return None
+
+    user_repo = UserRepository(db)
+    return user_repo.get_by_id(user_id)
+

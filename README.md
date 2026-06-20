@@ -1,59 +1,70 @@
-# Job Finder
+# NEXUS_JOBS: Job Finder Platform
 
-A full-stack application to search, save, track, and manage job applications.
+A highly interactive, full-stack job search and application tracking platform featuring a futuristic Cyberpunk UI. Built using a strict phased approach with clear separation of concerns (Facade patterns, Object-Oriented Repositories, layered routing).
 
-## Tech Stack
+## 🚀 Tech Stack
 
-| Layer      | Technology                  |
-|------------|-----------------------------|
-| Backend    | Python / FastAPI             |
-| Database   | PostgreSQL (SQLite for dev)  |
-| ORM        | SQLAlchemy 2.0               |
-| Frontend   | React + Vite (vanilla CSS)   |
+- **Backend**: Python 3, FastAPI, SQLAlchemy, SQLite
+- **Frontend**: React 18, Vite, Tailwind CSS v3
+- **Authentication**: JWT (JSON Web Tokens) with OAuth2 Password Flow
+- **Testing**: Pytest for End-to-End API testing
 
-## Project Structure
+## 🛠 Project Architecture
 
-```
-Job Finder/
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── config.py           # Pydantic Settings (env-based config)
-│   │   ├── database.py         # Engine, session factory, Base
-│   │   └── models/
-│   │       ├── __init__.py
-│   │       ├── user.py
-│   │       ├── company.py
-│   │       ├── job.py
-│   │       ├── application.py
-│   │       ├── saved_job.py
-│   │       └── application_note.py
-│   ├── requirements.txt
-│   └── schema.sql              # Raw DDL for review
-├── frontend/                   # (Phase 5)
-├── .gitignore
-└── README.md
-```
+The backend strictly follows a layered Object-Oriented Architecture:
+1. **API Routes (`/app/routes`)**: Thin HTTP handlers.
+2. **Services (`/app/services`)**: Core business logic implementing the Facade pattern.
+3. **Repositories (`/app/repositories`)**: Data access layer abstracts away SQLAlchemy ORM queries.
+4. **Models & Schemas (`/app/models`, `/app/schemas`)**: Database tables and Pydantic validation schemas.
 
-## Setup (Development)
+The frontend is a Component-based React SPA utilizing `AuthContext` for global state management and an Axios interceptor for secure API communication.
 
+## ⚙️ Local Setup
+
+### 1. Start the Backend
 ```bash
+# Navigate to backend directory
 cd backend
+
+# Create and activate virtual environment (Windows)
 python -m venv venv
-venv\Scripts\activate       # Windows
+venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
+pip install httpx pytest python-jose[cryptography]
+
+# Start the FastAPI server
+python -m uvicorn app.main:app --reload --port 8000
+```
+> The API will run at `http://localhost:8000/api`
+> View automatic Swagger documentation at `http://localhost:8000/docs`
+
+### 2. Seed Mock Data
+To populate the database with initial jobs and companies, run the following command (or visit the `/docs` page to execute it):
+```bash
+curl -X POST "http://localhost:8000/api/seed/jobs"
 ```
 
-## Database Schema
+### 3. Start the Frontend
+```bash
+# Navigate to frontend directory
+cd frontend
 
-Six normalized tables: `users`, `companies`, `jobs`, `applications`, `saved_jobs`, `application_notes`.
+# Install dependencies
+npm install
 
-See `backend/schema.sql` for the full DDL.
+# Start Vite development server
+npm run dev
+```
+> The UI will run at `http://localhost:5173`
 
-## Development Phases
+## 🧠 Utilizing for Real-World Jobs
 
-- [x] Phase 1: Architecture & Data Layer
-- [ ] Phase 2: Core Backend Logic
-- [ ] Phase 3: Specialized Service
-- [ ] Phase 4: API Integration & Testing
-- [ ] Phase 5: Presentation Layer (Frontend)
+To transition this platform from mock data to real-world utility:
+1. **Personal Tracker**: Use the UI to manually track job applications you make externally (e.g., LinkedIn, Indeed).
+2. **API Ingestion**: Create a Python CRON script to pull live data from free job aggregators (like the Adzuna API) and insert it into the SQLite `jobs` table using the `JobDataService`.
+3. **Scraping**: Implement BeautifulSoup/Selenium scripts to extract custom job listings from specific company career pages and post them to the database.
+
+## 📜 License
+MIT License

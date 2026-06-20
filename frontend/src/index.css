@@ -1,0 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600&family=Outfit:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-cyber-black text-cyber-text font-sans antialiased;
+    background-image: 
+      radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, rgba(176, 38, 255, 0.05) 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-white;
+  }
+
+  code, pre {
+    @apply font-mono;
+  }
+  
+  /* Custom Scrollbar for cyberpunk feel */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-cyber-charcoal;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cyber-gray border border-cyber-black rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-cyber-neonCyan;
+  }
+}
+
+@layer components {
+  /* Reusable glass effect container */
+  .glass-panel {
+    @apply bg-cyber-charcoal/80 backdrop-blur-md border border-cyber-gray shadow-lg rounded-xl transition-all duration-300;
+  }
+  
+  .glass-panel:hover {
+    @apply border-cyber-neonCyan/50 shadow-neon-cyan;
+  }
+}
+
+/* Animations that Tailwind config handles but might need extra precision */
+.text-glitch {
+  position: relative;
+}
+
+.text-glitch::before,
+.text-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.8;
+}
+
+.text-glitch::before {
+  left: 2px;
+  text-shadow: -1px 0 #ff0055;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.text-glitch::after {
+  left: -2px;
+  text-shadow: -1px 0 #00f0ff;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim2 5s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim {
+  0% { clip: rect(74px, 9999px, 86px, 0); }
+  5% { clip: rect(61px, 9999px, 4px, 0); }
+  10% { clip: rect(45px, 9999px, 85px, 0); }
+  15% { clip: rect(100px, 9999px, 12px, 0); }
+  20% { clip: rect(80px, 9999px, 53px, 0); }
+  100% { clip: rect(80px, 9999px, 53px, 0); }
+}
+
+@keyframes glitch-anim2 {
+  0% { clip: rect(65px, 9999px, 100px, 0); }
+  5% { clip: rect(52px, 9999px, 74px, 0); }
+  10% { clip: rect(79px, 9999px, 85px, 0); }
+  15% { clip: rect(8px, 9999px, 32px, 0); }
+  20% { clip: rect(31px, 9999px, 53px, 0); }
+  100% { clip: rect(31px, 9999px, 53px, 0); }
+}

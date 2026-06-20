@@ -20,7 +20,7 @@ from app.database import engine, Base
 from app.models import User, Company, Job, Application, SavedJob, ApplicationNote  # noqa: F401
 
 # Import route modules
-from app.routes import auth, users, companies, jobs, applications
+from app.routes import auth, users, companies, jobs, applications, search, dashboard, seed
 
 # ── Create Tables ────────────────────────────────────────────────
 # In production, use Alembic migrations instead of create_all().
@@ -52,6 +52,9 @@ app.include_router(users.router)
 app.include_router(companies.router)
 app.include_router(jobs.router)
 app.include_router(applications.router)
+app.include_router(search.router)
+app.include_router(dashboard.router)
+app.include_router(seed.router)
 
 
 # ── Health Check ─────────────────────────────────────────────────
